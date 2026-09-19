@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pelotón Series - Cronograma 2026</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,700;0,800;0,900;1,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --bg-dark: #111418;
+      --red-peloton: #e51d27;
+      --green-wsp: #25D366;
+      --green-light: #e6f4ea;
+      --green-dark: #1e8e3e;
+      --text-dark: #333;
+    }
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: var(--bg-dark);
+      background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 20px 20px;
+      color: white;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .header-main { text-align: center; margin-bottom: 20px; }
+    .header-main h1 { font-size: 3em; font-weight: 900; font-style: italic; margin: 0; line-height: 1; letter-spacing: -1px; }
+    .header-main .subtitle { color: var(--red-peloton); font-size: 1.5em; font-weight: 800; margin-top: 5px; }
+    .header-main .tags { font-size: 0.8em; font-weight: 700; letter-spacing: 2px; margin-top: 10px; }
+    
+    .card { background: white; color: var(--text-dark); padding: 30px 20px; border-radius: 16px; width: 100%; max-width: 500px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); box-sizing: border-box; }
+    .card h2 { color: var(--red-peloton); font-weight: 900; font-style: italic; font-size: 2.2em; margin: 0 0 15px 0; }
+    
+    .btn-red { background: var(--red-peloton); color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; font-weight: 800; font-size: 1.1em; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; box-shadow: 0 4px 10px rgba(229, 29, 39, 0.3); transition: transform 0.2s; }
+    .btn-red:hover { transform: scale(1.02); }
+    
+    .motto { font-size: 0.85em; font-style: italic; font-weight: 800; color: #999; margin: 20px 0; }
+    hr { border: none; border-top: 1px solid #eee; margin: 20px 0; }
+    
+    .btn-outline-green { background: transparent; border: 2px solid var(--green-wsp); color: var(--green-wsp); padding: 12px; width: 100%; border-radius: 8px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .btn-outline-red { background: transparent; border: 2px solid var(--red-peloton); color: var(--red-peloton); padding: 12px; width: 100%; border-radius: 8px; cursor: pointer; font-size: 1.2em; margin-bottom: 20px; }
+    
+    .price-section { margin-top: 10px; }
+    .price-label { display: block; font-size: 0.7em; font-weight: 800; color: #aaa; letter-spacing: 1px; }
+    .price-value { display: block; color: var(--red-peloton); font-size: 2.2em; font-weight: 900; margin-top: -5px; }
+    .price-detail { display: block; font-size: 0.65rem; font-weight: 700; color: #666; margin-top: 2px; }
+    .badge-sustain { background: var(--green-light); color: var(--green-dark); padding: 5px 15px; border-radius: 20px; font-size: 0.75em; font-weight: 800; display: inline-block; margin-top: 10px; }
+
+    #formSection { display: none; text-align: left; margin-top: 25px; border-top: 2px dashed #eee; padding-top: 20px; }
+    
+    /* BLOQUE CORREO CENTRALIZADO */
+    #boxCorreoComprador {
+      display: none; /* Oculto por defecto, solo visible con 2+ corredores */
+      background: #fff9e6;
+      border: 1px solid #ffe082;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+
+    .corredor-card {
+      background: #fdfdfd;
+      border: 1px solid #e0e0e0;
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 20px;
+      position: relative;
+    }
+    .corredor-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--red-peloton);
+    }
+    .corredor-title { font-weight: 900; font-size: 0.95rem; color: var(--red-peloton); }
+    .btn-remove-corredor { background: #ff4d4d; color: white; border: none; border-radius: 5px; padding: 4px 8px; font-size: 0.75rem; cursor: pointer; font-weight: bold; }
+    
+    .btn-add-corredor {
+      background: #222; color: #fff; border: 1px dashed var(--red-peloton);
+      width: 100%; padding: 12px; border-radius: 8px; font-weight: bold;
+      cursor: pointer; font-size: 0.9rem; margin-bottom: 20px;
+      display: flex; justify-content: center; align-items: center; gap: 8px;
+    }
+
+    .form-group { margin-bottom: 12px; }
+    .form-group label { font-size: 0.8em; font-weight: 700; color: #555; }
+    .optional { font-size: 0.8em; color: #888; font-weight: normal; }
+    input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-family: 'Montserrat'; font-weight: 600; margin-top: 5px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .file-box { border: 1px dashed var(--red-peloton); padding: 10px; border-radius: 6px; background: #fff9f9; }
+    .error-msg { color: var(--red-peloton); font-size: 0.8em; display: none; margin-top: 5px; }
+
+    /* DATOS DE TRANSFERENCIA */
+    .transfer-box {
+      background: #fff9f9;
+      border: 1px solid #f5c6cb;
+      border-left: 5px solid var(--red-peloton);
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
+      text-align: left;
+    }
+    .transfer-header {
+      font-size: 0.85rem;
+      font-weight: 900;
+      color: var(--red-peloton);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .transfer-details p {
+      margin: 3px 0;
+      font-size: 0.8rem;
+      color: #333;
+      line-height: 1.4;
+    }
+    .transfer-monto {
+      margin-top: 8px !important;
+      padding-top: 5px;
+      border-top: 1px dashed #f5c6cb;
+      color: var(--red-peloton) !important;
+      font-size: 1rem !important;
+    }
+
+    /* MODAL EN ESPERA */
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.88);
+      display: flex; justify-content: center; align-items: center;
+      z-index: 9999; padding: 15px; box-sizing: border-box;
+    }
+    .modal-content {
+      background: #181818; color: #fff; border: 2px solid var(--red-peloton);
+      border-radius: 12px; max-width: 480px; width: 100%; padding: 25px;
+      box-shadow: 0 5px 25px rgba(229, 29, 39, 0.4); text-align: left;
+      max-height: 90vh; overflow-y: auto; box-sizing: border-box;
+    }
+    .header-modal h2 { margin: 0; color: #fff; font-size: 1.5rem; letter-spacing: 1px; font-weight: 900; }
+    .header-modal .sub-header { color: var(--red-peloton); margin: 2px 0 15px 0; font-weight: bold; font-size: 0.85rem; }
+    .body-modal p { font-size: 0.9rem; line-height: 1.5; color: #ddd; margin: 10px 0; }
+    .greeting { font-weight: bold; font-size: 1rem !important; color: #fff !important; }
+    .social-links { list-style: none; padding: 0; margin: 15px 0; }
+    .social-links li { margin-bottom: 10px; font-size: 0.85rem; color: #ccc; }
+    .social-links a { color: #ff5252; text-decoration: none; font-weight: bold; }
+    .btn-wa {
+      display: inline-block; background: var(--green-wsp); color: #fff !important;
+      padding: 8px 12px; border-radius: 5px; margin-top: 5px; font-size: 0.8rem; text-decoration: none;
+    }
+    .event-info {
+      background: rgba(229, 29, 39, 0.15); border-left: 4px solid var(--red-peloton);
+      padding: 10px 15px; margin: 15px 0; border-radius: 4px;
+    }
+    .date-location { margin: 0 !important; color: #fff !important; font-size: 0.85rem !important; }
+    .slogan { text-align: center; font-style: italic; color: #aaa !important; font-size: 0.8rem !important; margin-top: 15px !important; }
+    .btn-close {
+      width: 100%; background: var(--red-peloton); color: white; border: none;
+      padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Encabezado Base -->
+  <div class="header-main">
+    <h1>PELOTÓN<br>SERIES</h1>
+    <div class="subtitle">CRONOGRAMA 2026</div>
+    <div class="tags">COMPETENCIA &nbsp;|&nbsp; SEGURIDAD &nbsp;|&nbsp; PASIÓN</div>
+  </div>
+
+  <!-- Tarjeta Principal -->
+  <div class="card">
+    <h2>11 DE OCTUBRE</h2>
+    
+    <button class="btn-red" id="btnComprarToggle">
+      <i class="fas fa-ticket-alt"></i> COMPRAR E-TICKET
+    </button>
+    
+    <p class="motto">EL FUTURO DEL CICLISMO CHILENO LO<br>CONSTRUIMOS ENTRE TODOS</p>
+    
+    <hr>
+    
+    <button class="btn-outline-green" onclick="window.open('https://chat.whatsapp.com/FKiUqmXWybC3fnfqpG92wx', '_blank')">
+      <i class="fab fa-whatsapp"></i> CANAL OFICIAL
+    </button>
+    <button class="btn-outline-red" id="btnCompartir">
+      <i class="fas fa-share-alt"></i>
+    </button>
+    
+    <div class="price-section">
+      <span class="price-label">VALOR INSCRIPCIÓN</span>
+      <span class="price-value">$22.000</span>
+      <span class="price-detail">$20.000 inscripción + $2.000 cobro por servicio</span>
+    </div>
+    <div class="badge-sustain">SUSTENTABILIDAD</div>
+
+    <!-- Sección Formulario -->
+    <div id="formSection">
+      <form id="registroForm">
+        
+        <!-- BANNER DE CORREO CENTRALIZADO (PAGO MÚLTIPLE) -->
+        <div id="boxCorreoComprador" class="form-group">
+          <label style="color:#000; font-weight:800;">CORREO PARA RECIBIR E-TICKETS / QR *</label>
+          <input type="email" id="correoComprador" placeholder="correo@ejemplo.cl" style="background:#fff;">
+          <small style="color:#666; font-size:0.75rem; font-weight:600;">A este correo llegarán las confirmaciones y los e-tickets de todos los inscritos.</small>
+        </div>
+
+        <!-- Contenedor Dinámico de Corredores -->
+        <div id="contenedorCorredores"></div>
+
+        <button type="button" class="btn-add-corredor" id="btnAddCorredor">
+          <i class="fas fa-user-plus"></i> AGREGAR OTRO CORREDOR (MÁX. 10)
+        </button>
+
+        <!-- Cuentas Bancarias para Transferencia -->
+        <div class="transfer-box">
+          <div class="transfer-header"><i class="fas fa-university"></i> DATOS PARA TRANSFERENCIA</div>
+          <div class="transfer-details">
+            <p><strong>Titular:</strong> Club ciclista isla de maipo</p>
+            <p><strong>RUT:</strong> 65.150.330-2</p>
+            <p><strong>Banco:</strong> BANCO SCOTIABANK</p>
+            <p><strong>Tipo de Cuenta:</strong> Cuenta Corriente</p>
+            <p><strong>Número de Cuenta:</strong> 992154144</p>
+            <p><strong>Correo:</strong> pelotonseriespagos@gmail.com</p>
+            <p class="transfer-monto">
+              <strong>Monto TOTAL a transferir:</strong> <span id="txtMontoTotal" style="font-weight:900;">$0</span><br>
+              <small id="txtDetalleMonto" style="font-weight: normal; color: #555;">(0 Corredores)</small>
+            </p>
+          </div>
+        </div>
+
+        <div class="form-group file-box">
+          <label style="color: var(--red-peloton); font-weight: 800;">Subir Comprobante Único de Transferencia *</label>
+          <input type="file" id="comprobante" accept="image/*, application/pdf" required style="border: none; margin-top: 8px;">
+        </div>
+
+        <button type="submit" class="btn-red" id="btnSubmit" style="margin-top: 15px;">ENVIAR DATOS DE INSCRIPCIÓN</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Confirmación / En Espera -->
+  <div id="modal-espera" class="modal-overlay" style="display:none;">
+    <div class="modal-content">
+      <div class="header-modal">
+        <h2>PELOTÓN SERIES</h2>
+        <p class="sub-header">GIRO DEL MAIPO CCIDM</p>
+      </div>
+      
+      <div class="body-modal">
+        <p class="greeting">Estimado/a corredor/a,</p>
+        <p>Agradecemos tu solicitud de inscripción de <strong>Peloton Series - Giro del Maipo CCIDM</strong>.</p>
+        <p>Hemos recibido la nómina de corredores y tu comprobante de pago. Te invitamos a seguir nuestros canales de difusión oficiales:</p>
+        
+        <ul class="social-links">
+          <li><strong>Instagram:</strong> <a href="https://instagram.com/pelotonseries" target="_blank">@pelotonseries</a> | <a href="https://instagram.com/girodelmaipo" target="_blank">@girodelmaipo</a></li>
+          <li><strong>Facebook:</strong> Peloton Series Chile</li>
+          <li>
+            <strong>Canal de WhatsApp:</strong><br>
+            <a href="https://chat.whatsapp.com/FKiUqmXWybC3fnfqpG92wx" target="_blank" class="btn-wa"><i class="fab fa-whatsapp"></i> Unirme al Canal de WhatsApp</a>
+          </li>
+        </ul>
+
+        <div class="event-info">
+          <p class="date-location">Te esperamos el <strong>Domingo 11 de Octubre</strong> en <strong>Parque Acuático Don Yayo</strong>.</p>
+        </div>
+
+        <p class="slogan">"El futuro del ciclismo chileno lo construimos entre todos"</p>
+      </div>
+
+      <button class="btn-close" onclick="cerrarModalEspera()">Entendido / Volver</button>
+    </div>
+  </div>
+
+  <script>
+    // URL DE TU DESPLIEGUE EN GOOGLE APPS SCRIPT (REEMPLAZAR CON TU URL REAL /exec)
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/TU_DEPLOYMENT_ID/exec';
+
+    const PRECIO_INSCRIPCION = 20000;
+    const CARGO_SERVICIO = 2000;
+    let contadorCorredores = 0;
+
+    // Algoritmo Módulo 11 para validación de RUT
+    function validarRutFormato(rut) {
+      let valor = rut.replace(/[^0-9kK]/g, '');
+      if (valor.length < 8) return false;
+
+      let cuerpo = valor.slice(0, -1);
+      let dv = valor.slice(-1).toUpperCase();
+
+      let suma = 0;
+      let multiplo = 2;
+
+      for (let i = 1; i <= cuerpo.length; i++) {
+        let index = multiplo * valor.charAt(cuerpo.length - i);
+        suma = suma + index;
+        if (multiplo < 7) { multiplo = multiplo + 1; } else { multiplo = 2; }
+      }
+
+      let dvEsperado = 11 - (suma % 11);
+      dv = (dv === 'K') ? 10 : dv;
+      dv = (dv === '0') ? 11 : dv;
+
+      return dvEsperado.toString() === dv.toString();
+    }
+
+    // Toggle de desplegar formulario
+    document.getElementById('btnComprarToggle').addEventListener('click', function() {
+      const form = document.getElementById('formSection');
+      form.style.display = form.style.display === 'block' ? 'none' : 'block';
+      if(form.style.display === 'block') {
+        if(contadorCorredores === 0) agregarCorredor();
+        form.scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+
+    // Control del despliegue del correo centralizador y cálculo dinámico de montos
+    function actualizarTotales() {
+      const totalInscripcion = contadorCorredores * PRECIO_INSCRIPCION;
+      const totalCargo = contadorCorredores * CARGO_SERVICIO;
+      const total = totalInscripcion + totalCargo;
+
+      // Formatear montos a moneda chilena
+      document.getElementById('txtMontoTotal').innerText = `$${total.toLocaleString('es-CL')}`;
+
+      // Actualizar el texto del detalle para separar inscripción y cargo
+      if (contadorCorredores > 0) {
+        document.getElementById('txtDetalleMonto').innerText = 
+          `(${contadorCorredores} Corredor(es): $${totalInscripcion.toLocaleString('es-CL')} inscripción + $${totalCargo.toLocaleString('es-CL')} cargo)`;
+      } else {
+        document.getElementById('txtDetalleMonto').innerText = `(0 Corredores)`;
+      }
+
+      // MOSTRAR BANNER DE CORREO SOLO SI HAY 2 O MÁS CORREDORES
+      const boxCorreo = document.getElementById('boxCorreoComprador');
+      const inputCorreoComprador = document.getElementById('correoComprador');
+      
+      if (contadorCorredores > 1) {
+        boxCorreo.style.display = 'block';
+        inputCorreoComprador.required = true;
+      } else {
+        boxCorreo.style.display = 'none';
+        inputCorreoComprador.required = false;
+      }
+    }
+
+    // Agregar nueva tarjeta de corredor
+    function agregarCorredor() {
+      if (contadorCorredores >= 10) {
+        alert("El límite máximo por solicitud es de 10 corredores.");
+        return;
+      }
+
+      contadorCorredores++;
+      const contenedor = document.getElementById('contenedorCorredores');
+      const index = contadorCorredores;
+
+      const div = document.createElement('div');
+      div.className = 'corredor-card';
+      div.id = `corredor_card_${index}`;
+
+      div.innerHTML = `
+        <div class="corredor-header">
+          <span class="corredor-title">CORREDOR #${index}</span>
+          ${index > 1 ? `<button type="button" class="btn-remove-corredor" onclick="removerCorredor(${index})"><i class="fas fa-trash"></i> Quitar</button>` : ''}
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group"><label>Nombres *</label><input type="text" class="c-nombres" required></div>
+          <div class="form-group">
+            <label>Apellidos *</label><input type="text" class="c-apellidos" required placeholder="Ej: Pérez González">
+            <div class="error-msg err-apellidos">Dos apellidos requeridos.</div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label>RUT *</label>
+            <input type="text" class="c-rut" required placeholder="12345678-9">
+            <div class="error-msg err-rut">RUT inválido.</div>
+          </div>
+          <div class="form-group">
+            <label>Correo *</label>
+            <input type="email" class="c-correo" required placeholder="correo@ejemplo.cl">
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Nacimiento *</label>
+            <input type="date" class="c-nacimiento" required onchange="actualizarCategoriasCard(${index})">
+          </div>
+          <div class="form-group">
+            <label>Género *</label>
+            <select class="c-genero" required onchange="actualizarCategoriasCard(${index})">
+              <option value="">Seleccione...</option>
+              <option value="Ds">Damas (Ds)</option>
+              <option value="Vs">Varones (Vs)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Categoría *</label>
+          <select class="c-categoria" required disabled><option value="">Automática...</option></select>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group"><label>Celular (WhatsApp) *</label><input type="tel" class="c-celular" required placeholder="+569..."></div>
+          <div class="form-group"><label>RRSS *</label><input type="text" class="c-rrss" required placeholder="@usuario"></div>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group"><label>Club *</label><input type="text" class="c-club" required></div>
+          <div class="form-group"><label>Ciudad *</label><input type="text" class="c-ciudad" required></div>
+        </div>
+
+        <div class="form-group"><label>Contacto Emergencia *</label><input type="text" class="c-emergencia" required placeholder="Nombre y Teléfono"></div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Grupo Sangre <span class="optional">(Opcional)</span></label>
+            <input type="text" class="c-sangre" placeholder="Ej: O+">
+          </div>
+          <div class="form-group">
+            <label>Bicicleta <span class="optional">(Opcional)</span></label>
+            <input type="text" class="c-bicicleta" placeholder="Ej: Trek">
+          </div>
+        </div>
+      `;
+
+      contenedor.appendChild(div);
+
+      // Validadores de Apellidos y RUT por tarjeta
+      const inputApellidos = div.querySelector('.c-apellidos');
+      inputApellidos.addEventListener('input', () => {
+        const palabras = inputApellidos.value.trim().split(/\s+/);
+        const msg = div.querySelector('.err-apellidos');
+        if (palabras.length < 2) {
+          msg.style.display = 'block';
+          inputApellidos.setCustomValidity('Inválido');
+        } else {
+          msg.style.display = 'none';
+          inputApellidos.setCustomValidity('');
+        }
+      });
+
+      const inputRut = div.querySelector('.c-rut');
+      inputRut.addEventListener('input', () => {
+        const msg = div.querySelector('.err-rut');
+        if (!validarRutFormato(inputRut.value)) {
+          msg.style.display = 'block';
+          inputRut.setCustomValidity('RUT Inválido');
+        } else {
+          msg.style.display = 'none';
+          inputRut.setCustomValidity('');
+        }
+      });
+
+      actualizarTotales();
+    }
+
+    // Remover corredor
+    function removerCorredor(index) {
+      const card = document.getElementById(`corredor_card_${index}`);
+      if (card) {
+        card.remove();
+        contadorCorredores--;
+        actualizarTotales();
+      }
+    }
+
+    // Cálculo dinámico de categorías por tarjeta
+    function actualizarCategoriasCard(index) {
+      const card = document.getElementById(`corredor_card_${index}`);
+      const fecha = card.querySelector('.c-nacimiento').value;
+      const genero = card.querySelector('.c-genero').value;
+      const select = card.querySelector('.c-categoria');
+
+      if (!fecha || !genero) return;
+
+      const edad = 2026 - new Date(fecha).getFullYear();
+      select.disabled = false; select.innerHTML = '';
+      let opciones = [];
+
+      if (edad >= 11 && edad <= 12) opciones.push(`Infantil ${genero}`);
+      if (edad >= 13 && edad <= 14) opciones.push(`Juvenil ${genero}`);
+      if (edad >= 15 && edad <= 16) opciones.push(`Intermedia ${genero}`);
+      if (edad >= 17 && edad <= 18) opciones.push(`Junior ${genero}`);
+      if (edad >= 19) { opciones.push(`Elite ${genero}`); opciones.push(`Principiantes ${genero}`); }
+      
+      if (genero === 'Vs') {
+        if (edad >= 35 && edad <= 39) opciones.push('Master A Vs');
+        if (edad >= 40 && edad <= 49) opciones.push('Master B Vs');
+        if (edad >= 50 && edad <= 59) opciones.push('Master C Vs');
+        if (edad >= 60 && edad <= 70) opciones.push('Master D Vs');
+      }
+      if (genero === 'Ds') {
+        if (edad >= 30 && edad <= 39) opciones.push('Master A Ds');
+        if (edad >= 40) opciones.push('Master B Ds');
+      }
+
+      if (opciones.length === 0) select.innerHTML = '<option value="">Sin categoría para esta edad</option>';
+      else opciones.forEach(cat => select.appendChild(new Option(cat, cat)));
+    }
+
+    document.getElementById('btnAddCorredor').addEventListener('click', agregarCorredor);
+
+    function abrirModalEspera() {
+      document.getElementById('modal-espera').style.display = 'flex';
+    }
+
+    function cerrarModalEspera() {
+      document.getElementById('modal-espera').style.display = 'none';
+    }
+
+    // Submit de inscripción adaptado para servidor externo / Vercel
+    document.getElementById('registroForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const cards = document.querySelectorAll('.corredor-card');
+      const corredoresData = [];
+
+      for (let i = 0; i < cards.length; i++) {
+        const card = cards[i];
+        const rutVal = card.querySelector('.c-rut').value;
+
+        if (!validarRutFormato(rutVal)) {
+          alert(`El RUT ingresado en el Corredor #${i + 1} no es válido.`);
+          card.querySelector('.c-rut').focus();
+          return;
+        }
+
+        corredoresData.push({
+          nombres: card.querySelector('.c-nombres').value,
+          apellidos: card.querySelector('.c-apellidos').value,
+          rut: rutVal,
+          correo: card.querySelector('.c-correo').value,
+          fechaNacimiento: card.querySelector('.c-nacimiento').value,
+          categoria: card.querySelector('.c-categoria').value,
+          celular: card.querySelector('.c-celular').value,
+          rrss: card.querySelector('.c-rrss').value,
+          club: card.querySelector('.c-club').value,
+          ciudad: card.querySelector('.c-ciudad').value,
+          emergencia: card.querySelector('.c-emergencia').value,
+          sangre: card.querySelector('.c-sangre').value || 'N/A',
+          bicicleta: card.querySelector('.c-bicicleta').value || 'N/A'
+        });
+      }
+
+      // DETERMINAR A QUÉ CORREO ENVIAR
+      let correoFinal = "";
+      if (contadorCorredores === 1) {
+        correoFinal = corredoresData[0].correo;
+      } else {
+        correoFinal = document.getElementById('correoComprador').value;
+      }
+
+      const btnSubmit = document.getElementById('btnSubmit');
+      btnSubmit.innerText = 'PROCESANDO INSCRIPCIÓN...'; btnSubmit.disabled = true;
+
+      const file = document.getElementById('comprobante').files[0];
+      const reader = new FileReader();
+
+      reader.onload = function(event) {
+        const payload = {
+          correoComprador: correoFinal,
+          totalMonto: contadorCorredores * (PRECIO_INSCRIPCION + CARGO_SERVICIO),
+          corredores: corredoresData,
+          fileBase64: event.target.result.split(',')[1],
+          mimeType: file.type,
+          fileName: file.name
+        };
+
+        // Petición HTTP POST enviada al servidor de Google Apps Script
+        fetch(APPS_SCRIPT_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'text/plain;charset=utf-8' // Previene bloqueos CORS en Google Apps Script
+          },
+          body: JSON.stringify(payload)
+        })
+        .then(res => res.json())
+        .then(response => {
+          if(response.status === 'success') {
+            document.getElementById('registroForm').reset();
+            document.getElementById('contenedorCorredores').innerHTML = '';
+            contadorCorredores = 0;
+            document.getElementById('formSection').style.display = 'none';
+            abrirModalEspera();
+          } else { 
+            alert(response.message || 'Ocurrió un inconveniente al procesar el registro.'); 
+          }
+          btnSubmit.innerText = 'ENVIAR DATOS DE INSCRIPCIÓN'; btnSubmit.disabled = false;
+        })
+        .catch(error => {
+          console.error('Error al conectar con el servidor:', error);
+          alert('Error de conexión con el servidor. Por favor, reintenta.');
+          btnSubmit.innerText = 'REINTENTAR'; btnSubmit.disabled = false;
+        });
+      };
+      
+      reader.readAsDataURL(file);
+    });
+
+    document.getElementById('btnCompartir').addEventListener('click', async () => {
+      const shareData = {
+        title: 'Inscripciones Pelotón Series 2026',
+        text: '¡Únete al futuro del ciclismo chileno! Inscríbete en el campeonato Pelotón Series 2026.',
+        url: window.location.href
+      };
+
+      try {
+        if (navigator.share) {
+          await navigator.share(shareData);
+        } else {
+          await navigator.clipboard.writeText(shareData.url);
+          alert('¡Enlace copiado al portapapeles!');
+        }
+      } catch (err) {
+        console.log('Error al compartir:', err);
+      }
+    });
+  </script>
+</body>
+</html>
