@@ -196,8 +196,8 @@
     
     <div class="price-section">
       <span class="price-label">VALOR INSCRIPCIÓN</span>
-      <span class="price-value">$22.000</span>
-      <span class="price-detail">$20.000 inscripción + $2.000 cobro por servicio</span>
+      <span class="price-value">$25.000</span>
+      <span class="price-detail">$25.000 inscripción + $2.000 cobro por servicio</span>
     </div>
     <div class="badge-sustain">SUSTENTABILIDAD</div>
 
@@ -287,12 +287,12 @@
 
     // --- MEJORA AÑADIDA: Función para determinar el precio según la categoría ---
     function obtenerPreciosCategoria(categoria) {
-      if (!categoria) return { inscripcion: 20000, cargo: 2000, total: 22000 };
+      if (!categoria) return { inscripcion: 25000, cargo: 2000, total: 27000 };
       const catUpper = categoria.toUpperCase();
       if (catUpper.includes('INFANTIL') || catUpper.includes('JUVENIL') || catUpper.includes('INTERMEDIA')) {
         return { inscripcion: 10000, cargo: 1000, total: 11000 };
       }
-      return { inscripcion: 20000, cargo: 2000, total: 22000 };
+      return { inscripcion: 25000, cargo: 2000, total: 27000 };
     }
     // ----------------------------------------------------------------------------
 
